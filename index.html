@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мэдээний жагсаалт</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Мэдээний жагсаалт</a></li>
+                <li><a href="news.html">Мэдээний дэлгэрэнгүй</a></li>
+            </ul>
+        </nav>
+        <h1>Мэдээний жагсаалт</h1>
+    </header>
+    <main>
+        <h2>Сүүлийн үеийн мэдээнүүд</h2>
+        <section id="newsList"></section>
+    </main>
+    <footer>
+        <p>Мэдээний сайт</p>
+    </footer>
+    <script>
+        function Medeetatah() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "rss.xml");
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(xhr.responseText, "text/xml");
+                    const items = xmlDoc.getElementsByTagName("item");
+                    const htmlId = document.getElementById("newsList");
+
+                    for (let i = 0; i < items.length; i++) {
+                        const title = items[i].getElementsByTagName("title")[0].textContent;
+                        let link = items[i].getElementsByTagName("link")[0]?.textContent || "news.html";
+                        const newsItem = document.createElement("div");
+                        newsItem.classList.add("news-item");
+
+                        newsItem.innerHTML = `
+                            <a href="news.html?link"><h3>${title}</h3></a> `;
+                        htmlId.appendChild(newsItem);
+                    }
+                } else {
+                    console.errror("RSS татахад алдаа гарлаа.");
+                }
+            };
+            xhr.onerror = function () {
+                console.error("Хүсэлт илгээхэд алдаа гарлаа.");
+            };
+            xhr.send();
+        }
+        window.onload = Medeetatah;
+    </script>
+</body>
+</html>
+
+
+
+

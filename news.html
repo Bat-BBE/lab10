@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мэдээний дэлгэрэнгүй</title>
+    <link rel="stylesheet" href="stylee.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Мэдээний жагсаалт</a></li>
+                <li><a href="news.html">Мэдээний дэлгэрэнгүй</a></li>
+            </ul>
+        </nav>
+        <h1>Мэдээний дэлгэрэнгүй</h1>
+    </header>
+    <main>
+        <h2>Мэдээний агуулга</h2>
+        <section id="newsDetail"></section>
+    </main>
+    <footer>
+        <p>Мэдээний сайт</p>
+    </footer>
+    <script>
+        function Medeetatah() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "rss.xml");
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(xhr.responseText, "text/xml");
+                    const items = xmlDoc.getElementsByTagName("item");
+                    const htmlId = document.getElementById("newsDetail");
+                    let newsContent = "";
+
+                    for (let i = 0; i < items.length; i++) {
+                        const title = items[i].getElementsByTagName("title")[0].textContent;
+                        const description = items[i].getElementsByTagName("description")[0].textContent;
+                        const newsItem = document.createElement("div");
+                        newsItem.classList.add("news-item");
+
+                        newsContent += `<div class="news-item"><h3>${title}</h3><p>${description}</p></div>`;
+                    }
+                    htmlId.innerHTML = newsContent;
+
+                } else {
+                    console.error("RSS татахад алдаа гарлаа.");
+                }
+            };
+            xhr.onerror = function () {
+                console.error("Хүсэлт илгээхэд алдаа гарлаа.");
+            };
+            xhr.send();
+        }
+        window.onload = Medeetatah;
+    </script>    
+    
+</body>
+</html>
