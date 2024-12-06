@@ -24,13 +24,13 @@
         <p>Мэдээний сайт</p>
     </footer>
     <script>
-        function getQueryParam(param) {
+        function indexOLoh(param) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(param);
         }
 
         function Medeetatah() {
-            const index = getQueryParam("index");
+            const index = indexOloh("index");
             if (index === null) {
                 document.getElementById("newsDetail").innerHTML = "<p>Мэдээ олдсонгүй!</p>";
                 return;
