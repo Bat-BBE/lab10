@@ -24,7 +24,18 @@
         <p>Мэдээний сайт</p>
     </footer>
     <script>
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
         function Medeetatah() {
+            const index = getQueryParam("index");
+            if (index === null) {
+                document.getElementById("newsDetail").innerHTML = "<p>Мэдээ олдсонгүй!</p>";
+                return;
+            }
+
             const xhr = new XMLHttpRequest();
             xhr.open("GET", "rss.xml");
             xhr.onload = function () {
@@ -32,19 +43,19 @@
                     const parser = new DOMParser();
                     const xmlDoc = parser.parseFromString(xhr.responseText, "text/xml");
                     const items = xmlDoc.getElementsByTagName("item");
-                    const htmlId = document.getElementById("newsDetail");
-                    let newsContent = "";
 
-                    for (let i = 0; i < items.length; i++) {
-                        const title = items[i].getElementsByTagName("title")[0].textContent;
-                        const description = items[i].getElementsByTagName("description")[0].textContent;
-                        const newsItem = document.createElement("div");
-                        newsItem.classList.add("news-item");
-
-                        newsContent += `<div class="news-item"><h3>${title}</h3><p>${description}</p></div>`;
+                    if (index < items.length) {
+                        const title = items[index].getElementsByTagName("title")[0].textContent;
+                        const description = items[index].getElementsByTagName("description")[0].textContent;
+                        const content = `
+                            <div class="news-item">
+                                <h3>${title}</h3>
+                                <p>${description}</p>
+                            </div>`;
+                        document.getElementById("newsDetail").innerHTML = content;
+                    } else {
+                        document.getElementById("newsDetail").innerHTML = "<p>Мэдээ олдсонгүй!</p>";
                     }
-                    htmlId.innerHTML = newsContent;
-
                 } else {
                     console.error("RSS татахад алдаа гарлаа.");
                 }
@@ -55,7 +66,6 @@
             xhr.send();
         }
         window.onload = Medeetatah;
-    </script>    
-    
+    </script> 
 </body>
 </html>
